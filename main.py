@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from statistics import mean
 
-from get_model import get_model_graph, get_model_list, get_stock
+from get_model import get_model_graph, get_model_list, get_stock, get_model_list_by_word
 
 from model import *
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,8 +27,11 @@ app.add_middleware(
 )
 
 @app.get("/models/")
-async def get_models():
-    return get_model_list()
+async def get_models(query: str = None):
+    if not query:
+        return get_model_list()
+    else:
+        return get_model_list_by_word(query)
 
 @app.get("/graph/{model}")
 async def get_graph(model: int):

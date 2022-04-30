@@ -2,17 +2,30 @@ from model import *
 import matplotlib.pyplot as plt
 import base64
 import connector.bigquery as bq
+def get_model_list_by_word(query):
+    models = bq.get_models_by_word(query)
+    return models
 
 def get_model_list():
 
     models = bq.get_models()
-    
+    #get total parts required and compare with stock
+    stocks = get_stock()
+    parts_usage_percent = {} # {model_id: {part_id: usage_percent}}
+    total_parts = {}
+    for model in models:
+        parts_usage_percent[model.id] = {}
+        total = sum ([ part.required for part in model.parts ])
+        print(total)
+        for part in model.parts:
+            parts_usage_percent[model.id][part.part.id] = part.required / total
+        
+        print(parts_usage_percent[model.id])
+
     return models
 
-def get_stock():
-    return bq.get_stock()
+
 def get_warn_status(model, parts_usage, total_parts):
-# DUMMY - 2 sells per week since we need the LSTM model
     parts_usage[model.id] = set()
     for part in model.parts:
         parts_usage[model.id].add(part.part.id)
@@ -39,3 +52,5 @@ def get_model_graph(id, sales):
     with open("graph.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
     return my_string
+def get_stock():
+    return bq.get_stock()
