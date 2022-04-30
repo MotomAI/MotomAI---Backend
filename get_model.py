@@ -1,27 +1,58 @@
+from joblib import PrintTime
 from model import *
 import matplotlib.pyplot as plt
 import base64
+from statistics import mean
 import connector.bigquery as bq
+import random
 def get_model_list_by_word(query):
     models = bq.get_models_by_word(query)
     return models
 
-def get_model_list():
+def predict_week(id, sales):
+    graphy = []
+    predicted_sales = 0
+
+    for row in sales:
+        if row[0] == id:
+            graphy.append(row[2])
+
+    for day in range(7):
+        predicted_sales += mean(graphy[-7:])
+        graphy.append(mean(graphy[-7:]))
+
+    return int(predicted_sales)
+
+def get_model_list(sales):
 
     models = bq.get_models()
     #get total parts required and compare with stock
-    stocks = get_stock()
+    stocks = bq.get_stock()
     parts_usage_percent = {} # {model_id: {part_id: usage_percent}}
-    total_parts = {}
+    required_parts = {}
+    models_that_use_parts = {} # {part_id: [model_id]}
     for model in models:
-        parts_usage_percent[model.id] = {}
-        total = sum ([ part.required for part in model.parts ])
-        print(total)
-        for part in model.parts:
-            parts_usage_percent[model.id][part.part.id] = part.required / total
+        parts_usage_percent = {}
+        total = sum ([ part.required for part in models[model].parts ])
+        for part in models[model].parts:
+            parts_usage_percent[part.part.id] = part.required / total * 100
         
-        print(parts_usage_percent[model.id])
-
+        for part in random.choices(list(parts_usage_percent.keys()), weights=list(parts_usage_percent.values()), k=predict_week(model, sales)) :
+            if part in required_parts:
+                required_parts[part] += 1
+                models_that_use_parts[part].add(model)
+            else:
+                required_parts[part] = 1 
+                models_that_use_parts[part] = {model}
+    
+    for part in required_parts:
+        if part > stocks[part]:
+            print(f"{part} will be below stock ({stocks[part]})")
+            for model_id in models_that_use_parts[part]:
+                models[model_id].warn = True
+                print(models[model_id].__dict__)
+        else:
+            print(f"{part} is ok")
     return models
 
 

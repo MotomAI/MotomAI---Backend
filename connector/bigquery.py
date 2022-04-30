@@ -26,10 +26,10 @@ def get_models():
     """
     SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2` LIMIT 20"""
     )
-    models = []
+    models = {}
     results = query_job.result()
     for model in results:
-        models.append(Model(model["model_id"], model["name"], model["year"], model["brand"], [ Used_Part(Parts(part["reference_id"], None, part["cont_part"]), part['total_ref_used']) for part in model['references_used'] ], random.choice([True, False])))
+        models[model["model_id"]] = Model(model["model_id"], model["name"], model["year"], model["brand"], [ Used_Part(Parts(part["reference_id"], None, part["cont_part"]), part['total_ref_used']) for part in model['references_used'] ], False)
     return models
     
 def get_stock():

@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-from statistics import mean
 
 from get_model import get_model_graph, get_model_list, get_stock, get_model_list_by_word
 
@@ -29,7 +28,7 @@ app.add_middleware(
 @app.get("/models/")
 async def get_models(query: str = None):
     if not query:
-        return get_model_list()
+        return get_model_list(sales)
     else:
         return get_model_list_by_word(query)
 
@@ -48,17 +47,4 @@ fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special 
 async def get_stocks():
     return get_stock()
 
-def predict_week(id):
-    graphy = []
-    predicted_sales = 0
-
-    for row in sales:
-        if row[0] == id:
-            graphy.append(row[2])
-
-    for day in range(7):
-        predicted_sales += mean(graphy[-7:])
-        graphy.append(mean(graphy[-7:]))
-
-    return predicted_sales
 ################################### // DUMMY ######################################
