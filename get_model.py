@@ -32,6 +32,8 @@ def get_model_graph(id, sales):
 
     plt.plot(graphx, graphy)
     plt.savefig('graph.png')
+    plt.clf()
+
     with open("graph.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
     return my_string
