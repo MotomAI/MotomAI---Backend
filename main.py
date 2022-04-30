@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-import matplotlib.pyplot as plt
-import base64
+
 from statistics import mean
 
 from get_model import get_model_graph, get_model_list
