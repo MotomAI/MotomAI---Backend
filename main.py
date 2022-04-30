@@ -1,7 +1,13 @@
 from fastapi import FastAPI
+import matplotlib.pyplot as plt
+import base64
 
 from model import *
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+
+df = pd.read_csv('bq-results-20220430-091305-1651311205831.csv')
+sales = df.values.tolist()
 
 app = FastAPI()
 
@@ -32,11 +38,27 @@ async def get_models():
     return dummy_models
 
 @app.get("/infomodel/{model}")
-async def get_model(model):
-    return dummy_models[0]
+async def get_model(model: int):
+    graph = get_graph(model)
+    model = Model(id=1, name="Moto X (1986-1988)", year=1995, brand="Harly", parts=[Used_Part(dummy_parts[2], 1),Used_Part(dummy_parts[0], 1)], warn=False, graph=graph)
+    return model
 
 @app.get("/stock/")
 async def get_stock(page: int):
     return dummy_parts[1*page:1*page+10]
 
 ################################### // DUMMY ######################################
+
+def get_graph(id):
+    graphx = []
+    graphy = []
+    for row in sales:
+        if row[0] == id:
+            graphx.append(row[1])
+            graphy.append(row[2])
+
+    plt.plot(graphx, graphy)
+    plt.savefig('graph.png')
+    with open("graph.png", "rb") as img_file:
+        my_string = base64.b64encode(img_file.read())
+    return my_string
