@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+import connector.bigquery as bq
 from model import *
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,7 +29,7 @@ fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special 
 
 @app.get("/models/")
 async def get_models():
-    return dummy_models
+    return bq.get_models()
 
 @app.get("/infomodel/{model}")
 async def get_model(model):
