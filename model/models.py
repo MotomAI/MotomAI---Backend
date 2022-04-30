@@ -11,4 +11,3 @@ class Model:
         self.brand = brand
         self.parts = parts
         self.warn = warn
-        self.graph = graph
