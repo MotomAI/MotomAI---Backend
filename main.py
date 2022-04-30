@@ -1,23 +1,12 @@
 from fastapi import FastAPI
 
+from model import *
+
 app = FastAPI()
-class Parts:
-    def __init__(self, id: int, name: str, total_in_stock: int) -> None:
-        self.id = id
-        self.name = name
-        self.total_in_stock = total_in_stock
-class Used_Part:
-    def __init__(self, part: Parts, required: int) -> None:
-        self.part = part
-        self.required = required
 
-class Model:
-    def __init__(self, id: int, name: str, year:int, parts : list[Used_Part]) -> None:
 
-        self.id = id
-        self.name = name
-        self.year = year
-        self.parts = parts
+
+
 
 dummy_parts = [Parts(1, "wheel", 12),Parts(2, "manillar", 2),Parts(3, "sillin", 4)]
 dummy_models = [Model(1, " K 100 RS Motorsport   (1986-1988)", 1995, [Used_Part(dummy_parts[0], 13),Used_Part(dummy_parts[1], 1)])]
