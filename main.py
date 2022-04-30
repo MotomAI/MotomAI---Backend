@@ -38,11 +38,10 @@ fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special 
 async def get_models():
     return bq.get_models()
 
-@app.get("/infomodel/{model}")
-async def get_model(model: int):
+@app.get("/graph/{model}")
+async def get_model_graph(model: int):
     graph = get_graph(model)
-    model = Model(id=1, name="Moto X (1986-1988)", year=1995, brand="Harly", parts=[Used_Part(dummy_parts[2], 1),Used_Part(dummy_parts[0], 1)], warn=False, graph=graph)
-    return model
+    return {"model": model, "graph": graph}
 
 @app.get("/stock/")
 async def get_stock(page: int):
