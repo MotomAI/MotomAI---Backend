@@ -13,7 +13,7 @@ cached_parts ={}
 def get_models_by_word(query):
     query_job = client.query(
     """
-    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2`  WHERE name LIKE '%{0}%' OR brand='{0}' LIMIT 20""".format(query)
+    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2`  WHERE name LIKE '%{0}%' OR brand='{0}' LIMIT 10""".format(query)
     )
     models = []
     results = query_job.result()
