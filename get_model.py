@@ -6,20 +6,21 @@ import connector.bigquery as bq
 def get_model_list():
 
     models = bq.get_models()
-    #get total parts required and compare with stock
-
-    parts_used = {}
-    for model in models:
-        model.used = get_warn_status(model)
+    
     return models
 
-def get_warn_status(model):
-    # DUMMY - 2 sells per week since we need the LSTM model
-    parts_usage = {}
-    total_parts = {}
+def get_stock():
+    return bq.get_stock()
+def get_warn_status(model, parts_usage, total_parts):
+# DUMMY - 2 sells per week since we need the LSTM model
+    parts_usage[model.id] = set()
     for part in model.parts:
-        print(f'From part {part.part.name} on {model.name} we used {part.required}')
-        
+        parts_usage[model.id].add(part.part.id)
+        if part.part.id  not in total_parts:
+            total_parts[part.part.id] = part.required
+        else:
+            total_parts[part.part.id] += part.required
+
     return True if model.year < 2000 else False
 def get_model_graph(id, sales):
     plt.clf()
@@ -31,6 +32,7 @@ def get_model_graph(id, sales):
             graphy.append(row[2])
 
     plt.plot(graphx, graphy)
+    plt.gca().axes.get_xaxis().set_visible(False)
     plt.savefig('graph.png')
     plt.clf()
 

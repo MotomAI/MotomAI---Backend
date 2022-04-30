@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from statistics import mean
 
-from get_model import get_model_graph, get_model_list
+from get_model import get_model_graph, get_model_list, get_stock
 
 from model import *
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,8 +42,8 @@ Model(id=1, name="Moto X (1986-1988)", year=1995, brand="Harly", parts=[Used_Par
 fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special   (1986-1988)"}, {"model": "R 100 RS   (1987-1995)"}]
 
 @app.get("/stock/")
-async def get_stock(page: int):
-    return dummy_parts[1*page:1*page+10]
+async def get_stocks():
+    return get_stock()
 
 def predict_week(id):
     graphy = []
