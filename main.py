@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import matplotlib.pyplot as plt
 import base64
 from statistics import mean
+
 from get_model import get_model_graph, get_model_list
 
 from model import *
@@ -45,8 +46,6 @@ fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special 
 async def get_stock(page: int):
     return dummy_parts[1*page:1*page+10]
 
-################################### // DUMMY ######################################
-
 def predict_week(id):
     graphy = []
     predicted_sales = 0
@@ -60,4 +59,3 @@ def predict_week(id):
         graphy.append(mean(graphy[-7:]))
 
     return predicted_sales
-
