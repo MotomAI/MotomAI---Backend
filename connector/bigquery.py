@@ -9,7 +9,7 @@ cached_parts ={}
 def get_models():
     query_job = client.query(
     """
-    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2` LIMIT 1"""
+    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2` LIMIT 20"""
     )
     models = []
     results = query_job.result()
