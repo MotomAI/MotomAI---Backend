@@ -8,3 +8,7 @@ _get_ to `/infomodels/{model_ID}` will return details regarding the model, like 
 # stock
 _get_ to `/stock` will return a paginated list of items in stock and the current unities.
 
+
+# LSTM webpages consulted
+https://stackoverflow.com/questions/45012992/how-to-prepare-data-for-lstm-when-using-multiple-time-series-of-different-length
+https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/

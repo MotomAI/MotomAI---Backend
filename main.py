@@ -1,6 +1,26 @@
 from fastapi import FastAPI
 
 app = FastAPI()
+class Parts:
+    def __init__(self, id: int, name: str, total_in_stock: int) -> None:
+        self.id = id
+        self.name = name
+        self.total_in_stock = total_in_stock
+class Used_Part:
+    def __init__(self, part: Parts, required: int) -> None:
+        self.part = part
+        self.required = required
+
+class Model:
+    def __init__(self, id: int, name: str, year:int, parts : list[Used_Part]) -> None:
+
+        self.id = id
+        self.name = name
+        self.year = year
+        self.parts = parts
+
+dummy_parts = [Parts(1, "wheel", 12),Parts(2, "manillar", 2),Parts(3, "sillin", 4)]
+dummy_models = [Model(1, " K 100 RS Motorsport   (1986-1988)", 1995, [Used_Part(dummy_parts[0], 13),Used_Part(dummy_parts[1], 1)])]
 
 
 ### DUMMY SECTION ###
@@ -8,16 +28,14 @@ fake_items_db = [{"model": "R 100 RT   (1978-1996)"}, {"model": "K 75 S Special 
 
 @app.get("/warnings/")
 async def get_warnings():
-    return fake_items_db
+    return dummy_models
 
 @app.get("/infomodel/{model}")
 async def get_model(model):
-    return {"model": model, "used_parts": [{"part_id":13,"part_name":"wheel", "stock":12, "required":15}]}
+    return dummy_models[0]
 
 @app.get("/stock/")
-async def get_stock(page):
-    return {"page": page,
-            "used_parts": [{"part_id":95,"part_name":"moto chair", "stock":43}]
-            }
+async def get_stock(page: int):
+    return dummy_parts[1*page:1*page+10]
 
 ################################### // DUMMY ######################################
