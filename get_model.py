@@ -30,6 +30,7 @@ def get_model_list(sales):
     stocks = bq.get_stock()
     parts_usage_percent = {} # {model_id: {part_id: usage_percent}}
     required_parts = {}
+    models_warned = set()
     models_that_use_parts = {} # {part_id: [model_id]}
     for model in models:
         parts_usage_percent = {}
@@ -47,13 +48,11 @@ def get_model_list(sales):
     
     for part in required_parts:
         if part > stocks[part]:
-            print(f"{part} will be below stock ({stocks[part]})")
             for model_id in models_that_use_parts[part]:
+                models_warned.add(model_id)
                 models[model_id].warn = True
-                print(models[model_id].__dict__)
-        else:
-            print(f"{part} is ok")
-    return models
+
+    return {'total_warns': len(models_warned), 'models': models}
 
 
 def get_warn_status(model, parts_usage, total_parts):
