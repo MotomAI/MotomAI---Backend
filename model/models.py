@@ -3,7 +3,7 @@ from model.parts import Parts
 
 
 class Model:
-    def __init__(self, id: int, name: str, year:int, brand: str, parts : list[Parts], warn: bool) -> None:
+    def __init__(self, id: int, name: str, year:int, brand: str, parts, warn: bool, graph: str = None) -> None:
 
         self.id = id
         self.name = name
@@ -11,3 +11,4 @@ class Model:
         self.brand = brand
         self.parts = parts
         self.warn = warn
+        self.graph = graph
