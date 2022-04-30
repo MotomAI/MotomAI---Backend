@@ -59,3 +59,4 @@ def predict_week(id):
         graphy.append(mean(graphy[-7:]))
 
     return predicted_sales
+################################### // DUMMY ######################################
