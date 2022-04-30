@@ -42,15 +42,19 @@ def get_model_list(sales):
             if part in required_parts:
                 required_parts[part] += 1
                 models_that_use_parts[part].add(model)
+                if  required_parts[part] > stocks[part]:
+                    for model_id in models_that_use_parts[part]:
+                        models_warned.add(model_id)
+                        models[model_id].warn = True
             else:
                 required_parts[part] = 1 
                 models_that_use_parts[part] = {model}
     
-    for part in required_parts:
-        if part > stocks[part]:
-            for model_id in models_that_use_parts[part]:
-                models_warned.add(model_id)
-                models[model_id].warn = True
+    # for part in required_parts:
+    #     if part > stocks[part]:
+    #         for model_id in models_that_use_parts[part]:
+    #             models_warned.add(model_id)
+    #             models[model_id].warn = True
 
     return {'total_warns': len(models_warned), 'models': models}
 
