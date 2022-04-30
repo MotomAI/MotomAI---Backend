@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 import matplotlib.pyplot as plt
 import base64
+from statistics import mean
 
 from model import *
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
+
 
 df = pd.read_csv('bq-results-20220430-091305-1651311205831.csv')
 sales = df.values.tolist()
@@ -58,7 +60,23 @@ def get_graph(id):
             graphy.append(row[2])
 
     plt.plot(graphx, graphy)
+    plt.show()
     plt.savefig('graph.png')
     with open("graph.png", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
     return my_string
+
+def predict_week(id):
+    graphy = []
+    predicted_sales = 0
+
+    for row in sales:
+        if row[0] == id:
+            graphy.append(row[2])
+
+    for day in range(7):
+        predicted_sales += mean(graphy[-7:])
+        graphy.append(mean(graphy[-7:]))
+
+    return predicted_sales
+
