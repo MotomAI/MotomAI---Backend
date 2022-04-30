@@ -24,7 +24,7 @@ def get_models_by_word(query):
 def get_models():
     query_job = client.query(
     """
-    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_v2` LIMIT 20"""
+    SELECT * FROM `bot-testing-345117.hackupc2022.modeldata_dev` LIMIT 20"""
     )
     models = {}
     results = query_job.result()
@@ -35,7 +35,7 @@ def get_models():
 def get_stock():
     query_job = client.query(
     """
-    SELECT * FROM `bot-testing-345117.hackupc2022.warehouse_v3` """
+    SELECT * FROM `bot-testing-345117.hackupc2022.warehouse_v4` """
     )
     stock = {}
     results = query_job.result()
