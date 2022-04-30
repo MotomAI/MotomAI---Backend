@@ -26,6 +26,7 @@ def predict_week(id, sales):
     return int(predicted_sales)
 
 def get_model_list(sales):
+    global DAILY_DATA
     if not DAILY_DATA:
         models = bq.get_models()
         #get total parts required and compare with stock
