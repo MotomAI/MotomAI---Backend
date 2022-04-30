@@ -5,6 +5,8 @@ import base64
 from statistics import mean
 import connector.bigquery as bq
 import random
+
+DAILY_DATA=None
 def get_model_list_by_word(query):
     models = bq.get_models_by_word(query)
     return models
@@ -24,35 +26,35 @@ def predict_week(id, sales):
     return int(predicted_sales)
 
 def get_model_list(sales):
-
-    models = bq.get_models()
-    #get total parts required and compare with stock
-    stocks = bq.get_stock()
-    parts_usage_percent = {} # {model_id: {part_id: usage_percent}}
-    required_parts = {}
-    models_warned = set()
-    models_that_use_parts = {} # {part_id: [model_id]}
-    for model in models:
-        parts_usage_percent = {}
-        total = sum ([ part.required for part in models[model].parts ])
-        for part in models[model].parts:
-            parts_usage_percent[part.part.id] = part.required / total * 100
+    if not DAILY_DATA:
+        models = bq.get_models()
+        #get total parts required and compare with stock
+        stocks = bq.get_stock()
+        parts_usage_percent = {} # {model_id: {part_id: usage_percent}}
+        required_parts = {}
+        models_warned = set()
+        models_that_use_parts = {} # {part_id: [model_id]}
+        for model in models:
+            parts_usage_percent = {}
+            total = sum ([ part.required for part in models[model].parts ])
+            for part in models[model].parts:
+                parts_usage_percent[part.part.id] = part.required / total * 100
+            
+            for part in random.choices(list(parts_usage_percent.keys()), weights=list(parts_usage_percent.values()), k=predict_week(model, sales)) :
+                if part in required_parts:
+                    required_parts[part] += 1
+                    models_that_use_parts[part].add(model)
+                else:
+                    required_parts[part] = 1 
+                    models_that_use_parts[part] = {model}
         
-        for part in random.choices(list(parts_usage_percent.keys()), weights=list(parts_usage_percent.values()), k=predict_week(model, sales)) :
-            if part in required_parts:
-                required_parts[part] += 1
-                models_that_use_parts[part].add(model)
-            else:
-                required_parts[part] = 1 
-                models_that_use_parts[part] = {model}
-    
-    for part in required_parts:
-        if part > stocks[part]:
-            for model_id in models_that_use_parts[part]:
-                models_warned.add(model_id)
-                models[model_id].warn = True
-
-    return {'total_warns': len(models_warned), 'models': models}
+        for part in required_parts:
+            if part > stocks[part]:
+                for model_id in models_that_use_parts[part]:
+                    models_warned.add(model_id)
+                    models[model_id].warn = True
+        DAILY_DATA = models, models_warned
+    return {'total_warns': len(DAILY_DATA[1]), 'models': DAILY_DATA[0]}
 
 
 def get_warn_status(model, parts_usage, total_parts):
