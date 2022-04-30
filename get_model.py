@@ -22,6 +22,7 @@ def get_warn_status(model):
         
     return True if model.year < 2000 else False
 def get_model_graph(id, sales):
+    plt.clf()
     graphx = []
     graphy = []
     for row in sales:
