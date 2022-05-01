@@ -30,7 +30,7 @@ async def get_models(query: str = None):
     if not query:
         return get_model_list(sales)
     else:
-        return get_model_list_by_word(query)
+        return get_model_list_by_word(query, sales)
 
 @app.get("/graph/{model}")
 async def get_graph(model: int):
